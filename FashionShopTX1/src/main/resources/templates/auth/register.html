@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký tài khoản - Fashion Shop</title>
+    <!-- Bootstrap 5.3.3 & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #f43f5e;
+            --accent-hover: #e11d48;
+            --bg: #090d16;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at top right, #1e293b 0%, #090d16 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+            color: #1e293b;
+        }
+        .auth-container {
+            width: 100%;
+            max-width: 1020px;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+        }
+        .brand-visual {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.95)),
+                        url('https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800') center/cover no-repeat;
+            color: #ffffff;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .brand-visual::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at top right, rgba(244, 63, 94, 0.25), transparent 70%);
+            pointer-events: none;
+        }
+        .auth-form-side {
+            padding: 45px 40px;
+            background: #ffffff;
+        }
+        .input-group-custom {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            background: #f8fafc;
+        }
+        .input-group-custom:focus-within {
+            border-color: var(--accent);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.12);
+        }
+        .input-group-custom.is-invalid-group {
+            border-color: #ef4444 !important;
+            background: #fef2f2 !important;
+        }
+        .input-group-custom .form-control {
+            border: none;
+            background: transparent;
+            padding: 11px 14px;
+            font-size: 0.95rem;
+            color: #0f172a;
+        }
+        .input-group-custom .input-group-text {
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            padding-left: 16px;
+        }
+        .btn-accent {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            font-weight: 700;
+            padding: 13px;
+            border-radius: 12px;
+            transition: all 0.25s ease;
+        }
+        .btn-accent:hover {
+            background: var(--accent-hover);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(244, 63, 94, 0.35);
+        }
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .benefit-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(244, 63, 94, 0.2);
+            color: #fda4af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .form-check-input:checked {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="row g-0">
+        <!-- Cột trái: Giới thiệu & Đặc quyền thành viên -->
+        <div class="col-lg-5 d-none d-lg-flex brand-visual">
+            <div class="position-relative" style="z-index: 2;">
+                <a href="/" class="d-inline-flex align-items-center text-white text-decoration-none fw-bold fs-4 mb-4">
+                    <i class="bi bi-bag-heart-fill text-danger me-2"></i>FASHION SHOP
+                </a>
+                <span class="badge bg-danger rounded-pill px-3 py-1 mb-3">ĐĂNG KÝ THÀNH VIÊN</span>
+                <h2 class="fw-extrabold display-6 lh-base mb-3" style="font-weight: 800;">
+                    Gia Nhập Cộng Đồng Thời Trang Thông Minh
+                </h2>
+                <p class="text-white-50 leading-relaxed mb-4">
+                    Tạo tài khoản để nhận ưu đãi đặc quyền, quản lý đơn hàng dễ dàng và nhận tư vấn trang phục riêng từ AI Stylist.
+                </p>
+
+                <!-- Các đặc quyền thành viên -->
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="bi bi-tag-fill"></i></div>
+                    <div class="small text-white">Giảm <strong>10%</strong> cho đơn hàng đầu tiên</div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="bi bi-truck"></i></div>
+                    <div class="small text-white">Miễn phí giao hàng toàn quốc từ 499.000₫</div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="bi bi-robot"></i></div>
+                    <div class="small text-white">Tư vấn phối đồ không giới hạn cùng AI Stylist</div>
+                </div>
+            </div>
+
+            <div class="position-relative" style="z-index: 2;">
+                <div class="text-white-50 small">
+                    © 2026 Fashion Shop. All rights reserved.
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: Form Đăng ký -->
+        <div class="col-lg-7 auth-form-side">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a href="/" class="text-decoration-none text-muted small fw-semibold">
+                    <i class="bi bi-arrow-left me-1"></i> Về trang chủ
+                </a>
+                <span class="badge bg-light text-muted border px-2 py-1">Tạo tài khoản</span>
+            </div>
+
+            <div class="mb-3">
+                <h3 class="fw-bold text-dark mb-1">Tạo tài khoản mới ✨</h3>
+                <p class="text-muted small mb-0">Điền các thông tin dưới đây để đăng ký tài khoản Fashion Shop</p>
+            </div>
+
+            <!-- Thông báo từ Server (Flash attribute) -->
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show py-2 small" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Thông báo tức thì từ Client JS -->
+            <div id="clientAlert" class="alert alert-danger alert-dismissible fade show py-2 small d-none" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i><span id="clientAlertMsg"></span>
+                <button type="button" class="btn-close" onclick="hideAlert()"></button>
+            </div>
+
+            <form method="post" action="/register" id="registerForm" onsubmit="return handleFormSubmit(event)">
+                <!-- Họ và tên -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark small mb-1">Họ và tên <span class="text-danger">*</span></label>
+                    <div class="input-group-custom d-flex align-items-center" id="groupFullName">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" name="fullName" id="regFullName" class="form-control"
+                               placeholder="Ví dụ: Nguyễn Văn An" autocomplete="name">
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <!-- Tên đăng nhập -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-dark small mb-1">Tên đăng nhập <span class="text-danger">*</span></label>
+                        <div class="input-group-custom d-flex align-items-center" id="groupUsername">
+                            <span class="input-group-text"><i class="bi bi-at"></i></span>
+                            <input type="text" name="username" id="regUsername" class="form-control"
+                                   placeholder="Ví dụ: annguyen26" autocomplete="username">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-dark small mb-1">Email</label>
+                        <div class="input-group-custom d-flex align-items-center">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input type="email" name="email" id="regEmail" class="form-control"
+                                   placeholder="an@gmail.com" autocomplete="email">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <!-- Mật khẩu -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-dark small mb-1">Mật khẩu <span class="text-danger">*</span></label>
+                        <div class="input-group-custom d-flex align-items-center" id="groupPassword">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input type="password" name="password" id="regPassword" class="form-control"
+                                   placeholder="Tối thiểu 6 ký tự" autocomplete="new-password">
+                            <button type="button" class="btn btn-link text-muted pe-3 text-decoration-none"
+                                    onclick="toggleRegPassword('regPassword', 'toggleRegPassIcon')" title="Ẩn/Hiện">
+                                <i class="bi bi-eye" id="toggleRegPassIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Xác nhận mật khẩu -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-dark small mb-1">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                        <div class="input-group-custom d-flex align-items-center" id="groupConfirm">
+                            <span class="input-group-text"><i class="bi bi-shield-check"></i></span>
+                            <input type="password" id="regConfirmPassword" class="form-control"
+                                   placeholder="Nhập lại mật khẩu" autocomplete="new-password">
+                            <button type="button" class="btn btn-link text-muted pe-3 text-decoration-none"
+                                    onclick="toggleRegPassword('regConfirmPassword', 'toggleRegConfirmIcon')" title="Ẩn/Hiện">
+                                <i class="bi bi-eye" id="toggleRegConfirmIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="termsCheck" checked>
+                    <label class="form-check-label text-muted small" for="termsCheck">
+                        Tôi đồng ý với <a href="#" class="text-decoration-none">Điều khoản dịch vụ</a> của Fashion Shop.
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-accent w-100 shadow-sm mb-3" id="submitBtn">
+                    <i class="bi bi-person-plus me-1"></i> Hoàn tất đăng ký
+                </button>
+            </form>
+
+            <div class="text-center">
+                <span class="text-muted small">Đã có tài khoản? </span>
+                <a href="/login" class="fw-bold text-decoration-none" style="color: var(--accent);">Đăng nhập tại đây</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Ẩn / Hiện mật khẩu
+function toggleRegPassword(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+
+function showAlert(msg) {
+    const alertBox = document.getElementById('clientAlert');
+    const alertMsg = document.getElementById('clientAlertMsg');
+    alertMsg.innerText = msg;
+    alertBox.classList.remove('d-none');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function hideAlert() {
+    document.getElementById('clientAlert').classList.add('d-none');
+}
+
+function resetGroupErrors() {
+    document.querySelectorAll('.input-group-custom').forEach(el => el.classList.remove('is-invalid-group'));
+    hideAlert();
+}
+
+// Kiểm tra trước khi submit
+function handleFormSubmit(event) {
+    resetGroupErrors();
+
+    const fullName = document.getElementById('regFullName').value.trim();
+    const username = document.getElementById('regUsername').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const confirm = document.getElementById('regConfirmPassword').value;
+
+    if (!fullName) {
+        event.preventDefault();
+        document.getElementById('groupFullName').classList.add('is-invalid-group');
+        showAlert('Vui lòng nhập Họ và tên của bạn!');
+        document.getElementById('regFullName').focus();
+        return false;
+    }
+
+    if (!username || username.length < 3) {
+        event.preventDefault();
+        document.getElementById('groupUsername').classList.add('is-invalid-group');
+        showAlert('Tên đăng nhập phải có ít nhất 3 ký tự (không chứa khoảng trắng)!');
+        document.getElementById('regUsername').focus();
+        return false;
+    }
+
+    // Không cho phép khoảng trắng trong username
+    if (/\s/.test(username)) {
+        event.preventDefault();
+        document.getElementById('groupUsername').classList.add('is-invalid-group');
+        showAlert('Tên đăng nhập không được chứa khoảng trắng!');
+        document.getElementById('regUsername').focus();
+        return false;
+    }
+
+    if (!password || password.length < 6) {
+        event.preventDefault();
+        document.getElementById('groupPassword').classList.add('is-invalid-group');
+        showAlert('Mật khẩu phải có tối thiểu 6 ký tự!');
+        document.getElementById('regPassword').focus();
+        return false;
+    }
+
+    if (password !== confirm) {
+        event.preventDefault();
+        document.getElementById('groupConfirm').classList.add('is-invalid-group');
+        showAlert('Mật khẩu và Xác nhận mật khẩu không khớp nhau!');
+        document.getElementById('regConfirmPassword').focus();
+        return false;
+    }
+
+    // Hợp lệ -> Submit bình thường
+    return true;
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

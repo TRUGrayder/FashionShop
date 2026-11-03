@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.id == null} ? 'Thêm sản phẩm' : 'Sửa sản phẩm'">Form sản phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root { --primary: #1a1a2e; }
+        body { background: #f0f2f5; }
+        .sidebar { background: var(--primary); min-height: 100vh; color: white; }
+        .sidebar a { color: rgba(255,255,255,.8); text-decoration: none; display: block; padding: 12px 20px; border-radius: 8px; margin: 4px 12px; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,.1); color: white; }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar p-0">
+            <div class="p-4"><h5 class="fw-bold">Admin</h5></div>
+            <a href="/admin/dashboard"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+            <a href="/admin/products" class="active"><i class="bi bi-box-seam me-2"></i>Sản phẩm</a>
+            <a href="/admin/orders"><i class="bi bi-receipt me-2"></i>Đơn hàng</a>
+            <a href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a>
+        </div>
+
+        <div class="col-md-10 p-4">
+            <h3 class="fw-bold mb-4" th:text="${product.id == null} ? 'Thêm sản phẩm mới' : 'Chỉnh sửa sản phẩm'"></h3>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <form method="post" action="/admin/products/save" class="needs-validation" novalidate>
+                        <input type="hidden" name="id" th:value="${product.id}">
+
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control" required
+                                       th:value="${product.name}" minlength="3">
+                                <div class="invalid-feedback">Vui lòng nhập tên sản phẩm (tối thiểu 3 ký tự)</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Danh mục <span class="text-danger">*</span></label>
+                                <select name="categoryId" class="form-select" required>
+                                    <option value="">-- Chọn danh mục --</option>
+                                    <option th:each="c : ${categories}"
+                                            th:value="${c.id}"
+                                            th:text="${c.name}"
+                                            th:selected="${product.categoryId == c.id}"></option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn danh mục</div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Mô tả</label>
+                                <textarea name="description" class="form-control" rows="3"
+                                          th:text="${product.description}"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Giá (VNĐ) <span class="text-danger">*</span></label>
+                                <input type="number" name="price" class="form-control" required min="1000"
+                                       th:value="${product.price}">
+                                <div class="invalid-feedback">Giá phải lớn hơn 0</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Số lượng <span class="text-danger">*</span></label>
+                                <input type="number" name="quantity" class="form-control" required min="0"
+                                       th:value="${product.quantity} ?: 0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Link hình ảnh</label>
+                                <input type="url" name="image" class="form-control"
+                                       th:value="${product.image}" placeholder="https://...">
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-lg"></i>
+                                <span th:text="${product.id == null} ? 'Thêm sản phẩm' : 'Cập nhật'"></span>
+                            </button>
+                            <a href="/admin/products" class="btn btn-outline-secondary ms-2">Hủy</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(() => {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

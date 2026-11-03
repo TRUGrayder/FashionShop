@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - Fashion Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #e94560;
+            --accent-hover: #d1334f;
+            --bg: #f8fafc;
+        }
+        body {
+            background: var(--bg);
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            color: #1e293b;
+        }
+        .navbar {
+            background: var(--primary) !important;
+        }
+        .nav-link {
+            color: rgba(255,255,255,.85) !important;
+            white-space: nowrap !important;
+            font-weight: 500;
+        }
+        .navbar-brand {
+            white-space: nowrap !important;
+        }
+        .btn-accent {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-accent:hover {
+            background: var(--accent-hover);
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(233,69,96,0.3);
+        }
+        .cart-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        .quantity-stepper {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 50px;
+            padding: 2px 4px;
+        }
+        .quantity-stepper .btn-step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: #ffffff;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            transition: all 0.15s ease;
+        }
+        .quantity-stepper .btn-step:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .quantity-stepper .btn-step:active {
+            transform: scale(0.92);
+        }
+        .quantity-stepper input {
+            width: 46px;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #0f172a;
+            outline: none;
+        }
+        /* Hide default number spinners */
+        .quantity-stepper input::-webkit-outer-spin-button,
+        .quantity-stepper input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .quantity-stepper input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .card {
+            border-radius: 16px;
+        }
+        .footer {
+            background: var(--primary);
+            color: rgba(255,255,255,.6);
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+    <div class="container-fluid px-lg-4 px-xl-5">
+        <a class="navbar-brand fw-bold text-white" href="/">
+            <i class="bi bi-bag-heart-fill text-danger me-2"></i>FASHION SHOP
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMain">
+            <!-- Menu chính bên trái, cạnh logo -->
+            <ul class="navbar-nav me-auto ms-lg-4 gap-1">
+                <li class="nav-item">
+                    <a class="nav-link" href="/"><i class="bi bi-house me-1"></i>Trang chủ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/products"><i class="bi bi-grid me-1"></i>Sản phẩm</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/ai/chat">
+                        <i class="bi bi-stars text-warning me-1"></i>Trợ lý AI Stylist
+                        <span class="badge bg-danger rounded-pill ms-1" style="font-size: 0.68rem;">HOT</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Ô tìm kiếm sản phẩm nhanh -->
+            <form action="/products" method="get" class="d-none d-lg-flex align-items-center ms-auto me-3" style="width: 280px;">
+                <div class="input-group input-group-sm bg-white rounded-pill p-1 shadow-sm border w-100">
+                    <span class="input-group-text bg-transparent border-0 ps-3 pe-1 text-muted">
+                        <i class="bi bi-search text-danger"></i>
+                    </span>
+                    <input type="text" name="keyword" class="form-control border-0 shadow-none bg-transparent ps-1"
+                           placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+                    <button type="submit" class="btn btn-dark rounded-pill px-3 py-1 btn-sm fw-semibold">
+                        Tìm
+                    </button>
+                </div>
+            </form>
+
+            <!-- Menu bên phải: Giỏ hàng + Tài khoản -->
+            <ul class="navbar-nav align-items-center gap-2 mt-3 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link text-white active fw-bold d-flex align-items-center" href="/cart">
+                        <i class="bi bi-bag-fill fs-5 me-1 text-danger"></i> Giỏ hàng
+                    </a>
+                </li>
+                <li class="nav-item" th:if="${currentUser == null}">
+                    <a class="btn btn-outline-light btn-sm px-3 rounded-pill" href="/login">
+                        <i class="bi bi-person me-1"></i> Đăng nhập
+                    </a>
+                </li>
+                <li class="nav-item dropdown" th:if="${currentUser != null}">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center text-white" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle fs-5 me-1 text-info"></i>
+                        <span th:text="${currentUser.fullName}">User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
+                        <li><a class="dropdown-item py-2 fw-semibold text-primary" href="/profile"><i class="bi bi-person-bounding-box me-2"></i>Trang cá nhân</a></li>
+                        <li><a class="dropdown-item py-2" href="/orders"><i class="bi bi-receipt me-2 text-primary"></i>Đơn hàng của tôi</a></li>
+                        <li th:if="${currentUser.role == 'ADMIN'}">
+                            <a class="dropdown-item py-2 text-danger fw-semibold" href="/admin/dashboard"><i class="bi bi-speedometer2 me-2"></i>Dashboard Admin</a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2 text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Giỏ hàng của bạn</h2>
+            <p class="text-muted mb-0">Thay đổi số lượng sẽ tự động cập nhật lại tổng tiền</p>
+        </div>
+        <a href="/products" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+            <i class="bi bi-arrow-left me-1"></i> Tiếp tục mua hàng
+        </a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Giỏ hàng trống -->
+    <div th:if="${#lists.isEmpty(cartItems)}" class="text-center py-5 card border-0 shadow-sm p-5 bg-white">
+        <i class="bi bi-cart-x" style="font-size: 4.5rem; color: #cbd5e1;"></i>
+        <h4 class="mt-3 fw-bold">Giỏ hàng của bạn đang trống</h4>
+        <p class="text-muted mb-4">Hãy khám phá bộ sưu tập thời trang mới nhất và thêm sản phẩm yêu thích vào giỏ nhé!</p>
+        <div>
+            <a href="/products" class="btn btn-accent px-4 py-2 rounded-pill">
+                <i class="bi bi-bag-plus me-1"></i> Khám phá sản phẩm
+            </a>
+        </div>
+    </div>
+
+    <!-- Danh sách sản phẩm trong giỏ -->
+    <div th:if="${!#lists.isEmpty(cartItems)}" class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm overflow-hidden">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th class="ps-4 py-3">Sản phẩm</th>
+                                <th class="py-3">Đơn giá</th>
+                                <th class="py-3 text-center">Số lượng</th>
+                                <th class="py-3 text-end">Tạm tính</th>
+                                <th class="pe-4 py-3 text-end"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${cartItems}" class="item-row" th:id="'cart-row-' + ${item.productId}">
+                                <td class="ps-4 py-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img th:src="${item.product != null ? item.product.image : ''}" class="cart-img" alt="">
+                                        <div>
+                                            <a th:href="@{/products/{id}(id=${item.productId})}"
+                                               class="fw-bold text-dark text-decoration-none d-block mb-1"
+                                               th:text="${item.product != null ? item.product.name : 'Sản phẩm'}">Tên sản phẩm</a>
+                                            <span class="badge bg-light text-muted border">Chính hãng</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="fw-semibold text-muted item-unit-price-display"
+                                          th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
+                                </td>
+                                <td class="text-center">
+                                    <!-- Nút tăng giảm số lượng mượt mà (Tự động tính tiền, không cần bấm Cập nhật) -->
+                                    <div class="quantity-stepper">
+                                        <button type="button" class="btn-step btn-minus"
+                                                onclick="changeQty(this, -1)" title="Giảm số lượng">
+                                            <i class="bi bi-dash"></i>
+                                        </button>
+                                        <input type="number" class="qty-input"
+                                               th:value="${item.quantity}"
+                                               min="1"
+                                               th:max="${item.product != null && item.product.quantity > 0 ? item.product.quantity : 99}"
+                                               th:data-product-id="${item.productId}"
+                                               th:data-unit-price="${item.product != null ? item.product.price : 0}"
+                                               onchange="onQtyInputChange(this)">
+                                        <button type="button" class="btn-step btn-plus"
+                                                onclick="changeQty(this, 1)" title="Tăng số lượng">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    <span class="fw-bold text-dark item-subtotal-display"
+                                          th:id="'subtotal-' + ${item.productId}"
+                                          th:text="${#numbers.formatDecimal(item.subTotal, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
+                                </td>
+                                <td class="pe-4 text-end">
+                                    <a th:href="@{/cart/remove/{id}(id=${item.productId})}"
+                                       class="btn btn-sm btn-outline-danger border-0 rounded-circle p-2"
+                                       title="Xóa khỏi giỏ hàng"
+                                       onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?');">
+                                        <i class="bi bi-trash3 fs-5"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột tóm tắt đơn hàng -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 sticky-top" style="top: 90px;">
+                <h5 class="fw-bold mb-3"><i class="bi bi-receipt me-2 text-primary"></i>Tóm tắt đơn hàng</h5>
+
+                <div class="d-flex justify-content-between py-2 text-muted">
+                    <span>Tạm tính</span>
+                    <span class="fw-semibold text-dark" id="summary-subtotal"
+                          th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
+                </div>
+                <div class="d-flex justify-content-between py-2 text-muted">
+                    <span>Phí vận chuyển</span>
+                    <span class="text-success fw-semibold">Miễn phí toàn quốc</span>
+                </div>
+
+                <hr class="my-3">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="fw-bold fs-6">Tổng thanh toán</span>
+                    <span class="fs-4 fw-bold text-danger" id="summary-grand-total"
+                          th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</span>
+                </div>
+
+                <a href="/checkout" class="btn btn-accent w-100 btn-lg py-3 mb-2 shadow-sm">
+                    <i class="bi bi-credit-card-2-front me-1"></i> Tiến hành đặt hàng
+                </a>
+                <a href="/products" class="btn btn-outline-secondary w-100 py-2">
+                    <i class="bi bi-bag-plus me-1"></i> Mua thêm sản phẩm khác
+                </a>
+
+                <div class="p-3 bg-light rounded-3 mt-4 text-muted small">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <i class="bi bi-shield-check text-success fs-5"></i>
+                        <span class="fw-semibold text-dark">Cam kết chất lượng 100%</span>
+                    </div>
+                    <span>Đổi trả dễ dàng trong vòng 30 ngày. Kiểm tra hàng trước khi nhận.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer text-center">
+    <div class="container"><small>© 2026 Fashion Shop. All rights reserved.</small></div>
+</footer>
+
+<script>
+// Định dạng số thành tiền VND (ví dụ: 897,000 ₫)
+function formatCurrencyVND(amount) {
+    return Number(amount).toLocaleString('vi-VN') + ' ₫';
+}
+
+// Bấm nút + hoặc -
+function changeQty(btn, delta) {
+    const stepper = btn.closest('.quantity-stepper');
+    const input = stepper.querySelector('.qty-input');
+    let currentVal = parseInt(input.value) || 1;
+    let maxVal = parseInt(input.getAttribute('max')) || 999;
+    let newVal = currentVal + delta;
+
+    if (newVal < 1) newVal = 1;
+    if (newVal > maxVal) newVal = maxVal;
+
+    if (newVal !== currentVal) {
+        input.value = newVal;
+        handleQtyUpdate(input);
+    }
+}
+
+// Người dùng gõ trực tiếp vào input số lượng
+function onQtyInputChange(input) {
+    let currentVal = parseInt(input.value) || 1;
+    let maxVal = parseInt(input.getAttribute('max')) || 999;
+
+    if (currentVal < 1) currentVal = 1;
+    if (currentVal > maxVal) currentVal = maxVal;
+
+    input.value = currentVal;
+    handleQtyUpdate(input);
+}
+
+// Xử lý tự động tính lại tiền và đồng bộ ngầm lên database
+function handleQtyUpdate(input) {
+    const productId = input.getAttribute('data-product-id');
+    const unitPrice = parseFloat(input.getAttribute('data-unit-price')) || 0;
+    const qty = parseInt(input.value) || 1;
+
+    // 1. Cập nhật ngay lập tức tiền Tạm tính của dòng sản phẩm đó trên giao diện
+    const itemSubtotal = qty * unitPrice;
+    const subtotalEl = document.getElementById('subtotal-' + productId);
+    if (subtotalEl) {
+        subtotalEl.innerText = formatCurrencyVND(itemSubtotal);
+    }
+
+    // 2. Tính lại tổng tiền của toàn bộ giỏ hàng ngay lập tức
+    let grandTotal = 0;
+    document.querySelectorAll('.qty-input').forEach(inp => {
+        const pPrice = parseFloat(inp.getAttribute('data-unit-price')) || 0;
+        const pQty = parseInt(inp.value) || 1;
+        grandTotal += (pPrice * pQty);
+    });
+
+    const summarySubtotal = document.getElementById('summary-subtotal');
+    const summaryGrandTotal = document.getElementById('summary-grand-total');
+    if (summarySubtotal) summarySubtotal.innerText = formatCurrencyVND(grandTotal);
+    if (summaryGrandTotal) summaryGrandTotal.innerText = formatCurrencyVND(grandTotal);
+
+    // 3. Gửi request ngầm (AJAX) lưu vào database (có debounce 250ms tránh spam khi bấm nhanh)
+    clearTimeout(input.syncTimer);
+    input.syncTimer = setTimeout(() => {
+        fetch('/cart/api/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                productId: productId,
+                quantity: qty
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Đồng bộ chính xác theo tính toán từ server nếu có
+                if (data.subTotal !== undefined && subtotalEl) {
+                    subtotalEl.innerText = formatCurrencyVND(data.subTotal);
+                }
+                if (data.total !== undefined) {
+                    if (summarySubtotal) summarySubtotal.innerText = formatCurrencyVND(data.total);
+                    if (summaryGrandTotal) summaryGrandTotal.innerText = formatCurrencyVND(data.total);
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Lỗi cập nhật giỏ hàng:', err);
+        });
+    }, 250);
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

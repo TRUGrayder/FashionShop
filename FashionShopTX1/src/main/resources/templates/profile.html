@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang cá nhân - Fashion Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #e94560;
+            --accent-hover: #d1334f;
+            --bg: #f8fafc;
+        }
+        body {
+            background: var(--bg);
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            color: #1e293b;
+        }
+        .navbar {
+            background: var(--primary) !important;
+        }
+        .nav-link {
+            color: rgba(255,255,255,.85) !important;
+            white-space: nowrap !important;
+            font-weight: 500;
+        }
+        .navbar-brand {
+            white-space: nowrap !important;
+        }
+        .btn-accent {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-accent:hover {
+            background: var(--accent-hover);
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(233,69,96,0.3);
+        }
+        .avatar-circle {
+            width: 88px;
+            height: 88px;
+            background: linear-gradient(135deg, #e94560, #ff758c);
+            color: white;
+            font-size: 2.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(233,69,96,0.25);
+        }
+        .card {
+            border-radius: 16px;
+            border: none;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+        .footer {
+            background: var(--primary);
+            color: rgba(255,255,255,.6);
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+    <div class="container-fluid px-lg-4 px-xl-5">
+        <a class="navbar-brand fw-bold text-white" href="/">
+            <i class="bi bi-bag-heart-fill text-danger me-2"></i>FASHION SHOP
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMain">
+            <!-- Menu chính bên trái, cạnh logo -->
+            <ul class="navbar-nav me-auto ms-lg-4 gap-1">
+                <li class="nav-item">
+                    <a class="nav-link" href="/"><i class="bi bi-house me-1"></i>Trang chủ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/products"><i class="bi bi-grid me-1"></i>Sản phẩm</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/ai/chat">
+                        <i class="bi bi-stars text-warning me-1"></i>Trợ lý AI Stylist
+                        <span class="badge bg-danger rounded-pill ms-1" style="font-size: 0.68rem;">HOT</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Ô tìm kiếm sản phẩm nhanh -->
+            <form action="/products" method="get" class="d-none d-lg-flex align-items-center ms-auto me-3" style="width: 280px;">
+                <div class="input-group input-group-sm bg-white rounded-pill p-1 shadow-sm border w-100">
+                    <span class="input-group-text bg-transparent border-0 ps-3 pe-1 text-muted">
+                        <i class="bi bi-search text-danger"></i>
+                    </span>
+                    <input type="text" name="keyword" class="form-control border-0 shadow-none bg-transparent ps-1"
+                           placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+                    <button type="submit" class="btn btn-dark rounded-pill px-3 py-1 btn-sm fw-semibold">
+                        Tìm
+                    </button>
+                </div>
+            </form>
+
+            <!-- Menu bên phải: Giỏ hàng + Tài khoản -->
+            <ul class="navbar-nav align-items-center gap-2 mt-3 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link text-white d-flex align-items-center" href="/cart">
+                        <i class="bi bi-bag fs-5 me-1"></i> Giỏ hàng
+                    </a>
+                </li>
+                <li class="nav-item dropdown" th:if="${user != null}">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center text-white active fw-semibold" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle fs-5 me-1 text-info"></i>
+                        <span th:text="${user.fullName}">Tài khoản</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
+                        <li><a class="dropdown-item py-2 fw-semibold text-primary" href="/profile"><i class="bi bi-person-bounding-box me-2"></i>Trang cá nhân</a></li>
+                        <li><a class="dropdown-item py-2" href="/orders"><i class="bi bi-receipt me-2 text-primary"></i>Đơn hàng của tôi</a></li>
+                        <li th:if="${user.role == 'ADMIN'}">
+                            <a class="dropdown-item py-2 text-danger fw-semibold" href="/admin/dashboard"><i class="bi bi-speedometer2 me-2"></i>Dashboard Admin</a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2 text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <!-- Profile Top Banner -->
+    <div class="card shadow-sm p-4 mb-4 bg-white">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-4">
+                <div class="avatar-circle">
+                    <span th:text="${#strings.substring(user.fullName, 0, 1)}">U</span>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <h3 class="fw-bold mb-0" th:text="${user.fullName}">Nguyễn Văn An</h3>
+                        <span th:if="${user.role == 'ADMIN'}" class="badge bg-danger rounded-pill px-3 py-1">Quản trị viên</span>
+                        <span th:if="${user.role != 'ADMIN'}" class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1">Khách hàng thành viên</span>
+                    </div>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-person me-1"></i>Tên đăng nhập: <strong class="text-dark" th:text="${user.username}">user1</strong>
+                        <span class="mx-2">·</span>
+                        <i class="bi bi-envelope me-1"></i><span th:text="${user.email != null ? user.email : 'Chưa có email'}">an@gmail.com</span>
+                    </p>
+                    <small class="text-muted" th:if="${user.createdAt != null}">
+                        <i class="bi bi-calendar-check me-1"></i>Tham gia từ: <span th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy')}">01/01/2026</span>
+                    </small>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/orders" class="btn btn-outline-primary px-3">
+                    <i class="bi bi-receipt me-1"></i> Đơn hàng của tôi
+                </a>
+                <a href="/cart" class="btn btn-outline-secondary px-3">
+                    <i class="bi bi-cart3 me-1"></i> Giỏ hàng
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card shadow-sm d-flex align-items-center gap-3">
+                <div class="stat-icon bg-primary-subtle text-primary">
+                    <i class="bi bi-bag-check-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">Đơn hàng đã đặt</div>
+                    <div class="fs-4 fw-bold" th:text="${orderCount} + ' đơn'">0 đơn</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card shadow-sm d-flex align-items-center gap-3">
+                <div class="stat-icon bg-danger-subtle text-danger">
+                    <i class="bi bi-wallet-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">Tổng tiền tích lũy</div>
+                    <div class="fs-4 fw-bold text-danger" th:text="${#numbers.formatDecimal(totalSpent, 0, 'COMMA', 0, 'POINT')} + ' ₫'">0 ₫</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card shadow-sm d-flex align-items-center gap-3">
+                <div class="stat-icon bg-warning-subtle text-warning">
+                    <i class="bi bi-award-fill"></i>
+                </div>
+                <div>
+                    <div class="text-muted small">Hạng tài khoản</div>
+                    <div class="fs-4 fw-bold text-dark">VIP Member</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area: Update Info & Change Password -->
+    <div class="row g-4">
+        <!-- Cột trái: Cập nhật thông tin cá nhân -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm p-4 h-100">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-person-lines-fill text-primary me-2"></i>Thông tin cá nhân</h5>
+                    <small class="text-muted">* Dùng để giao hàng tự động</small>
+                </div>
+
+                <!-- Alert Messages for Info Update -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form method="post" action="/profile/update">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tên đăng nhập (Username)</label>
+                        <input type="text" class="form-control bg-light" th:value="${user.username}" readonly>
+                        <small class="text-muted">Tên đăng nhập không thể thay đổi.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                        <input type="text" name="fullName" class="form-control" th:value="${user.fullName}" required placeholder="Họ và tên của bạn">
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Số điện thoại</label>
+                            <input type="tel" name="phone" class="form-control" th:value="${user.phone}" placeholder="Ví dụ: 0912345678">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email</label>
+                            <input type="email" name="email" class="form-control" th:value="${user.email}" placeholder="example@email.com">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Địa chỉ giao hàng mặc định</label>
+                        <textarea name="address" class="form-control" rows="3"
+                                  th:text="${user.address}"
+                                  placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố..."></textarea>
+                        <small class="text-muted">Địa chỉ này sẽ tự động điền khi bạn tạo đơn hàng mới.</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-accent px-4 py-2">
+                        <i class="bi bi-save me-1"></i> Lưu thay đổi
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Cột phải: Đổi mật khẩu & Tiện ích -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm p-4 mb-4">
+                <div class="border-bottom pb-3 mb-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-shield-lock-fill text-danger me-2"></i>Đổi mật khẩu</h5>
+                </div>
+
+                <!-- Alert Messages for Password -->
+                <div th:if="${passwordSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i><span th:text="${passwordSuccess}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${passwordError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${passwordError}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form method="post" action="/profile/change-password">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Mật khẩu hiện tại <span class="text-danger">*</span></label>
+                        <input type="password" name="oldPassword" class="form-control" required placeholder="Nhập mật khẩu hiện tại">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Mật khẩu mới <span class="text-danger">*</span></label>
+                        <input type="password" name="newPassword" class="form-control" required minlength="6" placeholder="Tối thiểu 6 ký tự">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
+                        <input type="password" name="confirmPassword" class="form-control" required minlength="6" placeholder="Nhập lại mật khẩu mới">
+                    </div>
+                    <button type="submit" class="btn btn-outline-dark w-100 py-2">
+                        <i class="bi bi-key me-1"></i> Cập nhật mật khẩu
+                    </button>
+                </form>
+            </div>
+
+            <!-- Hỗ trợ & Khác -->
+            <div class="card shadow-sm p-4 bg-light">
+                <h6 class="fw-bold mb-2"><i class="bi bi-headset me-2 text-primary"></i>Bạn cần trợ giúp?</h6>
+                <p class="text-muted small mb-3">
+                    Nếu bạn có câu hỏi về đơn hàng, thời trang hoặc cần tư vấn chọn đồ, đừng ngần ngại chat với Trợ lý AI Stylist của chúng tôi!
+                </p>
+                <a href="/ai/chat" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-robot text-warning me-1"></i>Hỏi AI Stylist ngay
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer text-center">
+    <div class="container"><small>© 2026 Fashion Shop. All rights reserved.</small></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
