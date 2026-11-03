@@ -51,7 +51,7 @@ public class UserController {
         model.addAttribute("currentUser", user);
         model.addAttribute("orderCount", orders.size());
         model.addAttribute("totalSpent", totalSpent);
-        return "profile";
+        return "user/profile";
     }
 
     @PostMapping("/update")

@@ -1,0 +1,72 @@
+/* ==========================================================================
+   FASHION SHOP - ADMIN CSS
+   ========================================================================== */
+
+:root {
+    --admin-primary: #1a1a2e;
+    --admin-bg: #f0f2f5;
+}
+
+body.admin-body {
+    background: var(--admin-bg);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+}
+
+.sidebar {
+    background: var(--admin-primary);
+    min-height: 100vh;
+    color: white;
+}
+
+.sidebar a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin: 4px 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.sidebar a:hover, .sidebar a.active {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+.sidebar a i {
+    font-size: 1.15rem;
+    margin-right: 10px;
+}
+
+.stat-card {
+    border: none;
+    border-radius: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+.stat-card .icon {
+    font-size: 2.5rem;
+    opacity: 0.85;
+}
+
+/* Status badges in admin */
+.status-badge {
+    font-size: 0.82rem;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-weight: 600;
+}
+
+.status-PENDING { background: #fff3cd; color: #856404; }
+.status-CONFIRMED { background: #cce5ff; color: #004085; }
+.status-SHIPPING { background: #d4edda; color: #155724; }
+.status-COMPLETED { background: #d1e7dd; color: #0f5132; }
+.status-CANCELLED { background: #f8d7da; color: #721c24; }

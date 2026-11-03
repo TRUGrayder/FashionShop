@@ -35,7 +35,7 @@ public class OrderController {
         model.addAttribute("cartItems", items);
         model.addAttribute("total", cartService.getTotal(user.getId()));
         model.addAttribute("currentUser", user);
-        return "checkout";
+        return "cart/checkout";
     }
 
     @PostMapping("/checkout")
@@ -63,7 +63,7 @@ public class OrderController {
 
         model.addAttribute("orders", orderService.getOrdersByUser(user.getId()));
         model.addAttribute("currentUser", user);
-        return "orders";
+        return "order/orders";
     }
 
     @GetMapping("/orders/{id}")
@@ -77,6 +77,6 @@ public class OrderController {
         }
         model.addAttribute("order", order);
         model.addAttribute("currentUser", user);
-        return "order-detail";
+        return "order/order-detail";
     }
 }

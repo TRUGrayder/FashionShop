@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="navbar(activeTab)">
+    <!-- 1. Top Announcement Bar -->
+    <div class="topbar text-center">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span class="d-none d-md-inline"><i class="bi bi-geo-alt me-1 text-danger"></i> Hệ thống cửa hàng trên toàn quốc</span>
+            <span>🎉 <strong>Ưu đãi thành viên mới:</strong> Giảm 10% đơn hàng đầu tiên · Freeship từ 499.000₫</span>
+            <span class="d-none d-md-inline"><i class="bi bi-telephone me-1 text-success"></i> CSKH: 1900 8888</span>
+        </div>
+    </div>
+
+    <!-- 2. Main Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container-fluid px-lg-4 px-xl-5">
+            <a class="navbar-brand text-white" href="/">
+                <i class="bi bi-bag-heart-fill text-danger me-2"></i>FASHION SHOP
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navMain">
+                <ul class="navbar-nav me-auto ms-lg-4 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activeTab == 'home'} ? 'active' : ''" href="/">
+                            <i class="bi bi-house me-1"></i>Trang chủ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activeTab == 'products'} ? 'active' : ''" href="/products">
+                            <i class="bi bi-grid me-1"></i>Sản phẩm
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activeTab == 'ai'} ? 'active' : ''" href="/ai/chat">
+                            <i class="bi bi-stars text-warning me-1"></i>Trợ lý AI Stylist
+                            <span class="badge bg-danger rounded-pill ms-1" style="font-size: 0.68rem;">HOT</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Thanh tìm kiếm nhanh -->
+                <form action="/products" method="get" class="d-none d-lg-flex align-items-center ms-auto me-3" style="width: 290px;">
+                    <div class="input-group input-group-sm bg-white rounded-pill p-1 shadow-sm border w-100">
+                        <span class="input-group-text bg-transparent border-0 ps-3 pe-1 text-muted">
+                            <i class="bi bi-search text-danger"></i>
+                        </span>
+                        <input type="text" name="keyword" class="form-control border-0 shadow-none bg-transparent ps-1"
+                               placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+                        <button type="submit" class="btn btn-dark rounded-pill px-3 py-1 btn-sm fw-semibold">
+                            Tìm
+                        </button>
+                    </div>
+                </form>
+
+                <ul class="navbar-nav align-items-center gap-2 mt-3 mt-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-white d-flex align-items-center" th:classappend="${activeTab == 'cart'} ? 'active' : ''" href="/cart">
+                            <i class="bi bi-bag fs-5 me-1"></i> Giỏ hàng
+                        </a>
+                    </li>
+
+                    <!-- Khách chưa đăng nhập -->
+                    <li class="nav-item" th:if="${currentUser == null}">
+                        <a class="btn btn-outline-light btn-sm px-3 rounded-pill" href="/login">
+                            <i class="bi bi-person me-1"></i> Đăng nhập
+                        </a>
+                    </li>
+
+                    <!-- Người dùng đã đăng nhập -->
+                    <li class="nav-item dropdown" th:if="${currentUser != null}">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle fs-5 me-1 text-info"></i>
+                            <span th:text="${currentUser.fullName}">User</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3">
+                            <li class="px-3 py-2 border-bottom">
+                                <div class="fw-bold text-truncate" style="max-width: 180px;" th:text="${currentUser.fullName}">User</div>
+                                <small class="text-muted text-truncate d-block" style="max-width: 180px;" th:text="${currentUser.email}">email</small>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="/profile">
+                                    <i class="bi bi-person-gear me-2 text-primary"></i> Hồ sơ cá nhân
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="/orders">
+                                    <i class="bi bi-receipt me-2 text-success"></i> Đơn hàng của tôi
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="/profile#tab-security">
+                                    <i class="bi bi-shield-lock me-2 text-warning"></i> Đổi mật khẩu
+                                </a>
+                            </li>
+                            <li th:if="${currentUser.role == 'ADMIN'}">
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li th:if="${currentUser.role == 'ADMIN'}">
+                                <a class="dropdown-item text-danger py-2 fw-semibold" href="/admin/dashboard">
+                                    <i class="bi bi-speedometer2 me-2"></i> Trang quản trị Admin
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-muted py-2" href="/logout">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>
