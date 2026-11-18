@@ -7,40 +7,78 @@
 <!-- Navbar Fragment -->
 <div th:replace="~{fragments/navbar :: navbar(activeTab='ai')}"></div>
 
-<main class="container my-4 flex-grow-1 d-flex flex-column" style="max-width: 860px;">
+<main class="container my-4 flex-grow-1 d-flex flex-column" style="max-width: 900px;">
     <!-- Chat Header Card -->
-    <div class="card border-0 shadow-sm p-3 mb-3 bg-white rounded-4 d-flex flex-row align-items-center justify-content-between">
+    <div class="card border-0 shadow-sm p-3 mb-3 bg-white rounded-4 d-flex flex-row align-items-center justify-content-between flex-wrap gap-2">
         <div class="d-flex align-items-center gap-3">
-            <div class="p-2 bg-danger-subtle text-danger rounded-circle fs-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+            <div class="p-2 bg-danger-subtle text-danger rounded-circle fs-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 52px; height: 52px;">
                 <i class="bi bi-robot"></i>
             </div>
             <div>
-                <h5 class="fw-bold mb-0">Trợ Lý AI Stylist</h5>
-                <small class="text-success"><i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i>Sẵn sàng tư vấn trực tuyến</small>
+                <div class="d-flex align-items-center gap-2">
+                    <h5 class="fw-bold mb-0">Trợ Lý AI Stylist</h5>
+                    <span class="badge bg-danger rounded-pill" style="font-size: 0.65rem;">PRO</span>
+                </div>
+                <small class="text-success d-flex align-items-center gap-1">
+                    <i class="bi bi-circle-fill" style="font-size: 0.45rem;"></i>
+                    <span>Tích hợp Qdrant Vector Search</span>
+                </small>
             </div>
         </div>
-        <a href="/products" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
-            <i class="bi bi-bag me-1"></i> Xem sản phẩm
-        </a>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="badge rounded-pill px-3 py-2 border shadow-sm"
+                  th:classappend="${qdrantStatus != null and qdrantStatus.connected} ? 'bg-success-subtle text-success border-success-subtle' : 'bg-primary-subtle text-primary border-primary-subtle'"
+                  title="Không gian Vector 64 chiều Cosine Similarity">
+                <i class="bi bi-cpu-fill me-1"></i>
+                <span th:text="${qdrantStatus != null ? qdrantStatus.mode : 'Qdrant Vector Engine'}">Qdrant Vector Engine</span>
+            </span>
+            <a href="/products" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                <i class="bi bi-bag me-1"></i> Sản phẩm
+            </a>
+        </div>
     </div>
 
     <!-- Chat Message Container -->
-    <div class="card border-0 shadow-sm rounded-4 flex-grow-1 p-4 mb-3 bg-white d-flex flex-column" style="min-height: 400px; max-height: 550px; overflow-y: auto;" id="chatBox">
+    <div class="card border-0 shadow-sm rounded-4 flex-grow-1 p-4 mb-3 bg-white d-flex flex-column" style="min-height: 440px; max-height: 580px; overflow-y: auto;" id="chatBox">
         <div class="d-flex gap-2 mb-3">
-            <div class="p-2 bg-danger-subtle text-danger rounded-circle align-self-start" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+            <div class="p-2 bg-danger-subtle text-danger rounded-circle align-self-start shadow-sm" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <i class="bi bi-robot"></i>
             </div>
-            <div class="p-3 rounded-4 bg-light text-dark" style="max-width: 80%; border-bottom-left-radius: 4px;">
-                <div class="fw-bold small mb-1 text-danger">AI Stylist</div>
-                <div>Xin chào! Em là trợ lý thời trang Fashion Shop. Em có thể gợi ý phối đồ, tư vấn trang phục theo dịp (đi làm, dạo phố, dự tiệc) hoặc gợi ý theo màu sắc bạn thích. Bạn đang tìm trang phục như thế nào?</div>
+            <div class="p-3 rounded-4 bg-light text-dark shadow-sm" style="max-width: 85%; border-bottom-left-radius: 4px;">
+                <div class="fw-bold small mb-1 text-danger d-flex align-items-center gap-1">
+                    <i class="bi bi-stars"></i> AI Stylist · Qdrant Vector Search
+                </div>
+                <div>
+                    Xin chào bạn! Em là <strong>AI Stylist</strong> của Fashion Shop. Em được trang bị thuật toán tìm kiếm vector ngữ nghĩa của <strong>Qdrant</strong> để tư vấn trang phục theo dịp (đi làm, dự tiệc, dạo phố), phối màu, che khuyết điểm hoặc lọc theo ngân sách.<br><br>
+                    💡 <em>Bạn đang dự định đi đâu hay muốn tìm phong cách trang phục nào?</em>
+                </div>
             </div>
         </div>
+    </div>
+
+    <!-- Quick Suggestion Badges -->
+    <div class="d-flex gap-2 mb-2 overflow-x-auto pb-1" style="white-space: nowrap;">
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 bg-white shadow-sm quick-btn" data-query="Hôm nay đi phỏng vấn xin việc nên mặc gì?">
+            👔 Đi phỏng vấn công sở
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 bg-white shadow-sm quick-btn" data-query="Tư vấn set đồ dự tiệc cưới sang trọng">
+            🥂 Dự tiệc cưới sang trọng
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 bg-white shadow-sm quick-btn" data-query="Gợi ý trang phục dạo phố mùa hè năng động">
+            👟 Dạo phố mùa hè
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 bg-white shadow-sm quick-btn" data-query="Có món đồ nào giá rẻ dưới 300k cho sinh viên không?">
+            🏷️ Đồ rẻ dưới 300k
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 bg-white shadow-sm quick-btn fw-bold" data-query="Kiểm tra trạng thái Qdrant Vector Database">
+            🚀 Kiến trúc Qdrant AI
+        </button>
     </div>
 
     <!-- Chat Input Form -->
     <form id="chatForm" class="d-flex gap-2">
-        <input type="text" id="messageInput" class="form-control form-control-lg rounded-pill shadow-sm ps-4"
-               placeholder="Nhập câu hỏi (Ví dụ: Đi phỏng vấn công sở nên mặc gì?)..." autocomplete="off" required>
+        <input type="text" id="messageInput" class="form-control form-control-lg rounded-pill shadow-sm ps-4 border-2"
+               placeholder="Hỏi AI Stylist (VD: Đi đám cưới mặc gì, áo polo, blazer nam...)..." autocomplete="off" required>
         <button type="submit" class="btn btn-accent btn-lg px-4 rounded-pill shadow-sm d-flex align-items-center justify-content-center">
             <i class="bi bi-send-fill"></i>
         </button>
@@ -55,32 +93,41 @@ const chatBox = document.getElementById('chatBox');
 const form = document.getElementById('chatForm');
 const input = document.getElementById('messageInput');
 
+// Lắng nghe các nút câu hỏi gợi ý nhanh
+document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        input.value = btn.getAttribute('data-query');
+        form.dispatchEvent(new Event('submit'));
+    });
+});
+
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const msg = input.value.trim();
     if (!msg) return;
 
-    // Tin nhắn của User
+    // 1. Hiển thị tin nhắn của User
     chatBox.innerHTML += `
         <div class="d-flex justify-content-end mb-3">
             <div class="p-3 rounded-4 bg-danger text-white shadow-sm" style="max-width: 80%; border-bottom-right-radius: 4px;">
-                ${msg}
+                ${escapeHtml(msg)}
             </div>
         </div>
     `;
     input.value = '';
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Trạng thái AI đang suy nghĩ
+    // 2. Hiệu ứng AI đang suy nghĩ
     const typing = document.createElement('div');
     typing.id = 'typingIndicator';
     typing.className = 'd-flex gap-2 mb-3';
     typing.innerHTML = `
-        <div class="p-2 bg-danger-subtle text-danger rounded-circle align-self-start" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+        <div class="p-2 bg-danger-subtle text-danger rounded-circle align-self-start shadow-sm" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
             <i class="bi bi-robot"></i>
         </div>
-        <div class="p-3 rounded-4 bg-light text-muted fst-italic" style="border-bottom-left-radius: 4px;">
-            AI đang phân tích và tìm câu trả lời...
+        <div class="p-3 rounded-4 bg-light text-muted fst-italic shadow-sm" style="border-bottom-left-radius: 4px;">
+            <span class="spinner-border spinner-border-sm text-danger me-2" role="status"></span>
+            AI Stylist đang đối chiếu Vector Qdrant...
         </div>
     `;
     chatBox.appendChild(typing);
@@ -98,11 +145,13 @@ form.addEventListener('submit', async (e) => {
 
         chatBox.innerHTML += `
             <div class="d-flex gap-2 mb-3">
-                <div class="p-2 bg-danger-subtle text-danger rounded-circle align-self-start" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                <div class="p-2 bg-danger-subtle text-danger rounded-circle align-self-start shadow-sm" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i class="bi bi-robot"></i>
                 </div>
-                <div class="p-3 rounded-4 bg-light text-dark shadow-sm" style="max-width: 80%; border-bottom-left-radius: 4px;">
-                    <div class="fw-bold small mb-1 text-danger">AI Stylist</div>
+                <div class="p-3 rounded-4 bg-light text-dark shadow-sm" style="max-width: 85%; border-bottom-left-radius: 4px;">
+                    <div class="fw-bold small mb-1 text-danger d-flex align-items-center gap-1">
+                        <i class="bi bi-stars"></i> AI Stylist
+                    </div>
                     <div>${data.answer}</div>
                 </div>
             </div>
@@ -113,17 +162,23 @@ form.addEventListener('submit', async (e) => {
 
         chatBox.innerHTML += `
             <div class="d-flex gap-2 mb-3">
-                <div class="p-2 bg-danger-subtle text-danger rounded-circle align-self-start" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                <div class="p-2 bg-danger-subtle text-danger rounded-circle align-self-start" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i class="bi bi-robot"></i>
                 </div>
-                <div class="p-3 rounded-4 bg-light text-danger" style="border-bottom-left-radius: 4px;">
-                    Xin lỗi, có lỗi kết nối với máy chủ AI. Bạn vui lòng thử lại nhé!
+                <div class="p-3 rounded-4 bg-danger-subtle text-danger" style="max-width: 80%;">
+                    Không thể kết nối đến máy chủ AI. Bạn hãy thử lại sau ít giây!
                 </div>
             </div>
         `;
     }
     chatBox.scrollTop = chatBox.scrollHeight;
 });
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 </script>
 
 </body>
